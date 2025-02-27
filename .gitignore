@@ -146,7 +146,7 @@ env.bak/
 venv.bak/
 alz_venv/
 alzimer_img
-artifacts/data_ingestion
+
 # Spyder project settings
 .spyderproject
 .spyproject
