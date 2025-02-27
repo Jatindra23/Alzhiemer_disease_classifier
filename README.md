@@ -1,6 +1,14 @@
-# Renal Disease Classifier
+# Alzheimer Disease Classifier
 
 This project is a deep learning solution for classifying renal diseases using MRI scans. It employs state-of-the-art neural networks and tools to build, train, and deploy the model efficiently. The project is designed to assist medical professionals in identifying renal conditions accurately, improving diagnostic workflows.
+
+echo "# Alzhiemer_disease_classifier" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/Jatindra23/Alzhiemer_disease_classifier.git
+git push -u origin main
 
 ---
 
@@ -18,7 +26,7 @@ This project is a deep learning solution for classifying renal diseases using MR
 ---
 
 ## Project Overview
-The **Renal Disease Classifier** leverages deep learning techniques to analyze MRI scans of kidneys and predict the likelihood of various renal diseases. The project focuses on:
+The **Alzheimer Disease Classifier** leverages deep learning techniques to analyze MRI scans of kidneys and predict the likelihood of various Alzheimer diseases. The project focuses on:
 - Automating the disease classification process.
 - Providing an interpretable and deployable model for real-world applications.
 
@@ -64,8 +72,8 @@ importlib-metadata==6.0.0
 
 ## Installation
 # Clone the repository
-git clone https://github.com/your-username/renal-disease-classifier.git
-cd renal-disease-classifier
+git clone https://github.com/Jatindra23/Alzhiemer_disease_classifier
+
 
 
 # Create and Activate a Virtual Environment
