@@ -22,8 +22,8 @@ class PredictionPipeline:
         Loads the pre-trained machine learning model.
         """
         try:
-            # model_path = os.path.join("artifacts", "training", "model.keras")
-            model_path = "artifacts\training\model.h5"
+            model_path = os.path.join("artifacts", "training", "model.h5")
+            
             model = load_model(model_path)
             logging.info(f"Model loaded successfully from {model_path}.")
             return model
