@@ -23,7 +23,7 @@ class PredictionPipeline:
         """
         try:
             # model_path = os.path.join("artifacts", "training", "model.keras")
-            model_path = "artifacts\training\model.keras"
+            model_path = "artifacts\training\model.h5"
             model = load_model(model_path)
             logging.info(f"Model loaded successfully from {model_path}.")
             return model
@@ -47,10 +47,10 @@ class PredictionPipeline:
             logging.info(f"Argmax result: {result}")
 
             # Decode prediction
-            if result[0] == 1:
-                prediction = "Tumor"
+            if result[0] == 0:
+                prediction = "mild"
             else:
-                prediction = "Normal"
+                prediction = "none"
 
             logging.info(f"Decoded prediction: {prediction}")
             return {"prediction": prediction}
