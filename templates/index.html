@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer Disease Classifier</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Embedded Custom CSS -->
+    <style>
+        body {
+            background-color: #a9e7e2;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #result, #error, #loading {
+            text-align: center;
+        }
+
+        /* Navbar Branding */
+        .navbar-brand img {
+            margin-right: 10px;
+        }
+
+        /* Spinner Customization */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Additional Custom Styles */
+        .container {
+            max-width: 1200px; /* Increased container width */
+        }
+
+        .btn-primary {
+            background-color: #13bccb;
+            border-color: #2fff00;
+        }
+
+        .btn-primary:hover {
+            background-color: #04ae9265;
+            border-color: #858500;
+        }
+
+        /* Responsive Image Preview */
+        #image-preview {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            display: none;
+            border: 1px solid #364b67;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        /* New Info Card Styles */
+        .info-card {
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(66, 93, 112, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/download.jpeg') }}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                Alzheimer Disease Classifier
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <h1 class="text-center">Detect Alzheimer Diseases</h1>
+        <p class="text-center">Upload an image to get started</p>
+        
+        <div class="row">
+            <!-- Left Column - Upload Form -->
+            <div class="col-lg-6">
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <!-- Upload Form -->
+                        <form id="upload-form" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Select Image</label>
+                                <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
+                            </div>
+                            <!-- Image Preview -->
+                            <img id="image-preview" src="#" alt="Image Preview">
+                            <button type="submit" class="btn btn-primary w-100 mt-3">Predict</button>
+                        </form>
+
+                        <!-- Loading Spinner -->
+                        <div class="mt-4" id="loading" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Processing...</p>
+                        </div>
+
+                        <!-- Prediction Result -->
+                        <div class="mt-4" id="result" style="display: none;">
+                            <h4>Prediction Result:</h4>
+                            <p id="prediction-text"></p>
+                        </div>
+
+                        <!-- Error Message -->
+                        <div class="mt-4" id="error" style="display: none;">
+                            <div class="alert alert-danger" role="alert">
+                                <span id="error-text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Alzheimer Information -->
+            <div class="col-lg-6 mt-4 mt-lg-0">
+                <div class="card info-card h-100">
+                    <img src="{{ url_for('static', filename='images/alz_img.jpeg') }}" 
+                         class="card-img-top" 
+                         alt="Alzheimer Illustration"
+                         style="max-height: 300px; object-fit: cover;"
+                         onerror="this.onerror=null;this.src='/static/images/default.jpg';">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">Understanding Alzheimer's Disease</h3>
+                        <p class="card-text lead">
+                            Alzheimer's disease is a progressive neurodegenerative disorder that affects 
+                            memory, thinking, and behavior. It is the most common cause of dementia, 
+                            accounting for 60-80% of dementia cases.
+                        </p>
+                        <div class="alzheimer-facts">
+                            <h5 class="mt-4">Key Facts:</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Affects over 50 million people worldwide</li>
+                                <li class="list-group-item">Early detection can help manage symptoms</li>
+                                <li class="list-group-item">Brain changes occur years before symptoms appear</li>
+                                <li class="list-group-item">Advanced imaging helps in diagnosis</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-muted">
+                                Our AI-powered classifier analyzes medical images to detect early signs 
+                                of Alzheimer's disease, helping medical professionals in diagnosis and 
+                                treatment planning.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies (Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Embedded Custom JavaScript -->
+    <script>
+        // Existing JavaScript code remains unchanged
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('upload-form');
+            const loadingDiv = document.getElementById('loading');
+            const resultDiv = document.getElementById('result');
+            const predictionText = document.getElementById('prediction-text');
+            const errorDiv = document.getElementById('error');
+            const errorText = document.getElementById('error-text');
+            const imageInput = document.getElementById('image');
+            const imagePreview = document.getElementById('image-preview');
+
+            imageInput.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.src = '#';
+                    imagePreview.style.display = 'none';
+                }
+            });
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                loadingDiv.style.display = 'block';
+                resultDiv.style.display = 'none';
+                errorDiv.style.display = 'none';
+
+                const formData = new FormData(form);
+
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingDiv.style.display = 'none';
+                    if (data.error) {
+                        errorText.textContent = data.error;
+                        errorDiv.style.display = 'block';
+                        resultDiv.style.display = 'none';
+                    } else {
+                        predictionText.textContent = data.prediction;
+                        resultDiv.style.display = 'block';
+                        errorDiv.style.display = 'none';
+                    }
+                })
+                .catch((error) => {
+                    loadingDiv.style.display = 'none';
+                    errorText.textContent = "An error occurred while processing your request.";
+                    errorDiv.style.display = 'block';
+                    resultDiv.style.display = 'none';
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
